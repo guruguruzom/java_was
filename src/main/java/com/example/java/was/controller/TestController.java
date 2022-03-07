@@ -1,5 +1,8 @@
 package com.example.java.was.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +13,9 @@ public class TestController {
 	public String textBasic(Model model) {
 		//HttpServletRequest request -> request.setAttribute
 		model.addAttribute("data", "Hello Spring!");
-		//System.out.println("11");
+		
+		List<String> error = new ArrayList<>();
+		String aa = error.get(2);
 		return "test";
 	}
 }

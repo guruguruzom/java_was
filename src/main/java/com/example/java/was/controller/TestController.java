@@ -7,15 +7,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller
+/*@Controller*/
 public class TestController {
-	@GetMapping("/basic")
-	public String textBasic(Model model) {
+	/* @GetMapping("/basic") */
+//	public String textBasic(Model model) {
+//		//HttpServletRequest request -> request.setAttribute
+//		model.addAttribute("data", "Hello Spring!");
+//		
+//		List<String> error = new ArrayList<>();
+//		String aa = error.get(2);
+//		return "test";
+//	}
+	
+	public String textBasic() {
 		//HttpServletRequest request -> request.setAttribute
-		model.addAttribute("data", "Hello Spring!");
+		//model.addAttribute("data", "Hello Spring!");
+		System.out.println("Hello Spring!");
 		
-		List<String> error = new ArrayList<>();
-		String aa = error.get(2);
 		return "test";
 	}
 }

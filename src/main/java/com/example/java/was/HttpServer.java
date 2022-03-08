@@ -10,12 +10,14 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.java.was.bean.ConfigSingleton;
+import com.example.java.was.bean.UrlMapperModule;
 import com.example.java.was.util.ReadFileUtil;
 
 /**
@@ -28,7 +30,7 @@ public class HttpServer {
     private static final String INDEX_FILE = "index.html";
     private static final String CONFIG_PATH = "\\src\\main\\resources\\";
     private static final String CONFIG_FILE = "config.json";
-    private static final String HTTP_METHOD_CONFIG_FILE = "http_method.json";
+    private static final String HTTP_METHOD_CONFIG_FILE = "url-mapping.json";
     private static final String WEB_PATH = "templates";
     private final File rootDirectory;
     private final int port;
@@ -64,12 +66,14 @@ public class HttpServer {
     	//SpringApplication.run(HttpServer.class, args);
     	//config setting
     	String path = System.getProperty("user.dir");
-    	String configString = ReadFileUtil.getJsonFile(path + CONFIG_PATH + CONFIG_FILE);
+    	JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
     	ConfigSingleton configSingleton = ConfigSingleton.ConfigInstance();
-    	configSingleton.setConfig(configString);
+    	configSingleton.setConfig(configJson.toString());
     	
     	//http method mapping
-    	HTTP_METHOD_CONFIG_FILE
+    	JSONArray urlMapperJson = ReadFileUtil.getJsonArray(path + CONFIG_PATH + HTTP_METHOD_CONFIG_FILE);
+    	UrlMapperModule urlMapperModule = UrlMapperModule.ModuleInstance();
+    	urlMapperModule.setUrlMapper(urlMapperJson);
     	
 		
         // get the Document root

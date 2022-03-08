@@ -1,8 +1,20 @@
-{
-	"packageName": "package com.example.java.was.controller",
-	"methodName": "GET",
-	"responseMethod": "test",
-	"headers": [
-		"Accept=application/json"
-	]
-}
+[
+	{
+		"url": "/test",
+		"packageName": "com.example.java.was.controller",
+		"methodName": "GET",
+		"responseMethod": "test",
+		"headers": [
+			"Accept=application/json"
+		]
+	},
+	{
+		"url": "/basic",
+		"packageName": "com.example.java.was.controller",
+		"methodName": "GET",
+		"responseMethod": "TestController",
+		"headers": [
+			"Accept=application/json"
+		]
+	}
+]

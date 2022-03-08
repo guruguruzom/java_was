@@ -7,7 +7,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 
+import com.example.java.was.controller.TestController;
 import com.example.java.was.model.HttpResponse;
+import com.example.java.was.model.UrlMapper;
 
 public class HttpResponseUtil {
 	
@@ -23,12 +25,13 @@ public class HttpResponseUtil {
 		httpResponse.setHeader(responseCode, contentType, length);
 	}
 	
-	public static Class<?> runMethod(String packageName, String functionName) {
+	public static Class<TestController> runMethod(UrlMapper urlMapper) {
 		try {
-			Class<?> cls = Class.forName(packageName + "." + functionName);
+			System.out.println(urlMapper.getPackageName() + "." + urlMapper.getUrl());
+			Class<TestController> cls = (Class<TestController>)Class.forName(urlMapper.getPackageName() + "." + urlMapper.getResponseMethod());
 //			Method m = cls.getDeclaredMethod(functionNameA);
 //			m.invoke(obj);
-			cls.newInstance();
+			//cls.newInstance();
 			return cls; 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -37,3 +40,4 @@ public class HttpResponseUtil {
 	}
 	
 }
+

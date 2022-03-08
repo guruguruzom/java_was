@@ -1,10 +1,22 @@
 package com.example.java.was.model;
 
-public class HttpMethod {
+import java.util.Arrays;
+import java.util.List;
+
+public class UrlMapper {
+	private String url;
 	private String packageName;
 	private String methodName;
 	private String responseMethod;
-	private String[] headers;
+	private List<String> headers;
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	public String getPackageName() {
 		return packageName;
@@ -30,11 +42,11 @@ public class HttpMethod {
 		this.responseMethod = responseMethod;
 	}
 
-	public String[] getHeaders() {
+	public List<String> getHeaders() {
 		return headers;
 	}
 
-	public void setHeaders(String[] headers) {
+	public void setHeaders(List<String> headers) {
 		this.headers = headers;
 	}
 

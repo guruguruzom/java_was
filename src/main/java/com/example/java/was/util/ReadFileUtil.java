@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,13 +16,21 @@ public class ReadFileUtil {
 	 * @return JSONObject
 	 * @throws IOException, ParseException
 	 */
-	public static String getJsonFile(String filePath) throws IOException, ParseException
+	public static JSONObject getJsonObject(String filePath) throws IOException, ParseException
 	{
 		JSONParser parser = new JSONParser();
 		// JSON 파일 읽기
 		Reader reader = new FileReader(filePath);
 		JSONObject jsonObject = (JSONObject) parser.parse(reader);
-		return jsonObject.toString();
-
+		return jsonObject;
+	} 
+	
+	public static JSONArray getJsonArray(String filePath) throws IOException, ParseException
+	{
+		JSONParser parser = new JSONParser();
+		// JSON 파일 읽기
+		Reader reader = new FileReader(filePath);
+		JSONArray jsonObject = (JSONArray) parser.parse(reader);
+		return jsonObject;
 	} 
 }

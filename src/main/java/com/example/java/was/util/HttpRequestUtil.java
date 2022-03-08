@@ -33,7 +33,7 @@ public class HttpRequestUtil {
             //String get : ex) GET /basic HTTP/1.1
             String get = requestLine.toString();
             
-            String[] tokens = get.split("\\\\s+");
+            String[] tokens = get.split("\\s+");
             if(tokens.length == 3) {
             	httpRequest = new HttpRequest();
             	httpRequest.setMethod(tokens[0]);

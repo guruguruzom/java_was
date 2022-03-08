@@ -8,8 +8,14 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.example.java.was.model.HttpRequest;
+import com.example.java.was.model.HttpResponse;
+import com.example.java.was.util.HttpRequestUtil;
+import com.example.java.was.util.HttpResponseUtil;
+
 public class RequestProcessor implements Runnable {
     private final static Logger logger = Logger.getLogger(RequestProcessor.class.getCanonicalName());
+    private static final String TEMPLATE_PATH = "\\src\\main\\resources\\templates";
     private File rootDirectory;
     private String indexFileName = "index.html";
     private Socket connection;
@@ -36,21 +42,16 @@ public class RequestProcessor implements Runnable {
         try {
             OutputStream raw = new BufferedOutputStream(connection.getOutputStream());
             Writer out = new OutputStreamWriter(raw);
-            Reader in = new InputStreamReader(new BufferedInputStream(connection.getInputStream()), "UTF-8");
-            StringBuilder requestLine = new StringBuilder();
-            while (true) {
-                int c = in.read();
-                if (c == '\r' || c == '\n')
-                    break;
-                requestLine.append((char) c);
-            }
-            String get = requestLine.toString();
-            System.out.println(root);
-            System.out.println(get);
-            logger.info(connection.getRemoteSocketAddress() + " " + get);
-            String[] tokens = get.split("\\s+");
-            String method = tokens[0];
-            String version = "";
+            HttpResponse httpResponse = HttpResponseUtil.setHttpResponse(connection.getOutputStream());
+            HttpRequest httpRequest = HttpRequestUtil.setHttpRequest(connection.getInputStream());
+            //exe 호출 검출
+            Boolean isValidateUrl = HttpRequestUtil.isValidateUrl(httpRequest.getUrl());
+          
+            //1.file path를 찾는다
+            //2.file path는 매핑되어 있다.
+            
+            String path = System.getProperty("user.dir");
+            
             if (method.equals("GET")) {
                 String fileName = tokens[1];
                 if (fileName.endsWith("/")) fileName += indexFileName;

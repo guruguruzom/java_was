@@ -28,6 +28,7 @@ public class HttpServer {
     private static final String INDEX_FILE = "index.html";
     private static final String CONFIG_PATH = "\\src\\main\\resources\\";
     private static final String CONFIG_FILE = "config.json";
+    private static final String HTTP_METHOD_CONFIG_FILE = "http_method.json";
     private static final String WEB_PATH = "templates";
     private final File rootDirectory;
     private final int port;
@@ -64,8 +65,11 @@ public class HttpServer {
     	//config setting
     	String path = System.getProperty("user.dir");
     	String configString = ReadFileUtil.getJsonFile(path + CONFIG_PATH + CONFIG_FILE);
-    	ConfigSingleton configSingleton = ConfigSingleton.ConfigBean();
+    	ConfigSingleton configSingleton = ConfigSingleton.ConfigInstance();
     	configSingleton.setConfig(configString);
+    	
+    	//http method mapping
+    	HTTP_METHOD_CONFIG_FILE
     	
 		
         // get the Document root

@@ -12,7 +12,7 @@ public class ConfigSingleton {
 	private static ConfigSingleton instance;
 	private Config config;
 	
-	public static ConfigSingleton ConfigBean() {
+	public static ConfigSingleton ConfigInstance() {
 		if(instance == null) {
 			instance = new ConfigSingleton();
 		}

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.example.java.was.bean.ConfigSingleton;
 import com.example.java.was.model.HttpRequest;
 import com.example.java.was.model.HttpResponse;
 import com.example.java.was.util.HttpRequestUtil;
@@ -37,7 +38,8 @@ public class RequestProcessor implements Runnable {
 
     @Override
     public void run() {
-        // for security checks
+    	ConfigSingleton configSingleton =  ConfigSingleton.ConfigInstance();
+    	
         String root = rootDirectory.getPath();
         try {
             OutputStream raw = new BufferedOutputStream(connection.getOutputStream());
@@ -46,12 +48,12 @@ public class RequestProcessor implements Runnable {
             HttpRequest httpRequest = HttpRequestUtil.setHttpRequest(connection.getInputStream());
             //exe 호출 검출
             Boolean isValidateUrl = HttpRequestUtil.isValidateUrl(httpRequest.getUrl());
-          
             //1.file path를 찾는다
             //2.file path는 매핑되어 있다.
+            String path = System.getProperty("user.dir") + TEMPLATE_PATH;
+            //String methodName = routers.getRouter(packageName).getRouter(request.getUrl());
             
-            String path = System.getProperty("user.dir");
-            
+            HttpResponse.runMethod()
             if (method.equals("GET")) {
                 String fileName = tokens[1];
                 if (fileName.endsWith("/")) fileName += indexFileName;

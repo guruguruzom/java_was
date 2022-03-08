@@ -1,0 +1,8 @@
+{
+	"packageName": "package com.example.java.was.controller",
+	"methodName": "GET",
+	"responseMethod": "test",
+	"headers": [
+		"Accept=application/json"
+	]
+}

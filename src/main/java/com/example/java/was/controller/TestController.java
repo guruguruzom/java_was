@@ -19,10 +19,10 @@ public class TestController {
 //		return "test";
 //	}
 	
-	public String textBasic() {
+	public String textBasic(String test) {
 		//HttpServletRequest request -> request.setAttribute
 		//model.addAttribute("data", "Hello Spring!");
-		System.out.println("Hello Spring!");
+		System.out.println("Hello Spring!" + test);
 		
 		return "test";
 	}

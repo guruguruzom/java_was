@@ -25,12 +25,19 @@ public class HttpResponseUtil {
 		httpResponse.setHeader(responseCode, contentType, length);
 	}
 	
-	public static Class<TestController> runMethod(UrlMapper urlMapper) {
+	public static Class<?> runMethod(UrlMapper urlMapper) {
 		try {
-			System.out.println(urlMapper.getPackageName() + "." + urlMapper.getUrl());
-			Class<TestController> cls = (Class<TestController>)Class.forName(urlMapper.getPackageName() + "." + urlMapper.getResponseMethod());
+			System.out.println(urlMapper.getPackageName() + "." + urlMapper.getControllerName());
+			System.out.println(urlMapper.getResponseMethod());
+			Class<?> cls = (Class<?>)Class.forName(urlMapper.getPackageName() + "." + urlMapper.getControllerName());
+			
+			Object obj = cls.newInstance();
+			
+			Method m = cls.getMethod(urlMapper.getResponseMethod(),String.class);
+			//Method m = cls.getMethod(urlMapper.getResponseMethod(),파라미터 타입.class (ex:Integer.class))
 //			Method m = cls.getDeclaredMethod(functionNameA);
 //			m.invoke(obj);
+			m.invoke(obj, "method test");
 			//cls.newInstance();
 			return cls; 
 		} catch (Exception e) {

@@ -63,22 +63,22 @@ public class RequestProcessor implements Runnable {
             //1.file path를 찾는다
             //2.file path는 매핑되어 있다.
             UrlMapper urlMapper = urlMapperModule.getUrlInfo(httpRequest.getUrl());
-            Class<TestController> classMethod = HttpResponseUtil.runMethod(urlMapper);
-            TestController classMethod2;
-            System.out.println("3333");
-			try {
-				
-				classMethod2 = classMethod.newInstance();
-				System.out.println("444");
-				classMethod2.textBasic();
-				System.out.println("555");
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+            Class<?> classMethod = HttpResponseUtil.runMethod(urlMapper);
+            //TestController classMethod2;
+            //System.out.println("3333");
+//			try {
+//				
+//				//classMethod2 = classMethod.newInstance();
+//				System.out.println("444");
+//				//classMethod2.textBasic();
+//				System.out.println("555");
+//			} catch (InstantiationException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
             
             //Class<TestController> test = classMethod;  
             //textBasic()

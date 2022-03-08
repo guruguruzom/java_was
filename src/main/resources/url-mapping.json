@@ -4,6 +4,7 @@
 		"packageName": "com.example.java.was.controller",
 		"methodName": "GET",
 		"responseMethod": "test",
+		"controllerName": "TestController",
 		"headers": [
 			"Accept=application/json"
 		]
@@ -12,7 +13,8 @@
 		"url": "/basic",
 		"packageName": "com.example.java.was.controller",
 		"methodName": "GET",
-		"responseMethod": "TestController",
+		"responseMethod": "textBasic",
+		"controllerName": "TestController",
 		"headers": [
 			"Accept=application/json"
 		]

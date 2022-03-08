@@ -8,6 +8,7 @@ public class UrlMapper {
 	private String packageName;
 	private String methodName;
 	private String responseMethod;
+	private String controllerName;
 	private List<String> headers;
 
 	public String getUrl() {
@@ -40,6 +41,14 @@ public class UrlMapper {
 
 	public void setResponseMethod(String responseMethod) {
 		this.responseMethod = responseMethod;
+	}
+
+	public String getControllerName() {
+		return controllerName;
+	}
+
+	public void setControllerName(String controllerName) {
+		this.controllerName = controllerName;
 	}
 
 	public List<String> getHeaders() {

@@ -1,8 +1,12 @@
 package com.example.java.was.bean;
 
+import java.io.IOException;
+
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import com.example.java.was.model.Config;
+import com.example.java.was.util.ReadFileUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +21,29 @@ public class ConfigSingleton {
 			instance = new ConfigSingleton();
 		}
 		return instance;
+	}
+	
+	public void setConfig(String path, String file, String webPath) {
+		
+		try {
+			JSONObject configJson;
+			configJson = ReadFileUtil.getJsonObject(path + file);
+			ObjectMapper mapper = new ObjectMapper();
+			config = mapper.readValue(configJson.toString(), Config.class);
+			config.setDocPath(path + webPath);
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void setConfig(String configString) {
@@ -42,5 +69,9 @@ public class ConfigSingleton {
 
 	public String getErrorPath() {
 		return config.getErrorPath();
+	}
+	
+	public String getDocPath() {
+		return config.getDocPath();
 	}
 }

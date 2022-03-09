@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 
+import com.example.java.simple.controller.impl.SimpleServlet;
 import com.example.java.was.controller.TestController;
 import com.example.java.was.model.HttpResponse;
 import com.example.java.was.model.UrlMapper;
@@ -17,7 +18,7 @@ public class HttpResponseUtil {
 		OutputStream raw = new BufferedOutputStream(outputStream);
         Writer out = new OutputStreamWriter(raw);
         HttpResponse httpResponse = new HttpResponse();
-        httpResponse.setOut(out);
+        httpResponse.setWriter(out);
         return httpResponse;
 	}
 	
@@ -25,21 +26,17 @@ public class HttpResponseUtil {
 		httpResponse.setHeader(responseCode, contentType, length);
 	}
 	
-	public static Class<?> runMethod(UrlMapper urlMapper) {
+	public static SimpleServlet getClass(UrlMapper urlMapper) {
 		try {
-			System.out.println(urlMapper.getPackageName() + "." + urlMapper.getControllerName());
-			System.out.println(urlMapper.getResponseMethod());
-			Class<?> cls = (Class<?>)Class.forName(urlMapper.getPackageName() + "." + urlMapper.getControllerName());
+
+			String controllerName = urlMapper.getUrl().replace("/", "");
+			Class<SimpleServlet> cls = (Class<SimpleServlet>)Class.forName(urlMapper.getPackageName() + "." + controllerName);
 			
-			Object obj = cls.newInstance();
+			//함수명 설정 실행 interface 요구사항으로 제외
+			//Method m = cls.getMethod("service",String.class);
+			//m.invoke(obj, "method test");
 			
-			Method m = cls.getMethod(urlMapper.getResponseMethod(),String.class);
-			//Method m = cls.getMethod(urlMapper.getResponseMethod(),파라미터 타입.class (ex:Integer.class))
-//			Method m = cls.getDeclaredMethod(functionNameA);
-//			m.invoke(obj);
-			m.invoke(obj, "method test");
-			//cls.newInstance();
-			return cls; 
+			return cls.newInstance(); 
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

@@ -4,17 +4,17 @@ import java.io.IOException;
 import java.io.Writer;
 
 public class HttpResponse {
-	private Writer out;
+	private Writer writer;
 	private String responseCode;
 	private String contentType;
 	private int length;
 
-	public Writer getOut() {
-		return out;
+	public Writer getWriter() {
+		return writer;
 	}
 
-	public void setOut(Writer out) {
-		this.out = out;
+	public void setWriter(Writer writer) {
+		this.writer = writer;
 	}
 
 	public String getResponseCode() {
@@ -41,12 +41,19 @@ public class HttpResponse {
 		this.length = length;
 	}
 
-	public void setHeader(String responseCode, String contentType, int length) throws IOException {
-		this.out.write(responseCode + "\r\n");
-		this.out.write("Server: JHTTP 2.0\r\n");
-		this.out.write("Content-length: " + length + "\r\n");
-		this.out.write("Content-type: " + contentType + "\r\n\r\n");
-		this.out.flush();
+	public void sendHeader(String responseCode, String contentType, int length) throws IOException {
+		this.writer.write(responseCode + "\r\n");
+		this.writer.write("Server: JHTTP 2.0\r\n");
+		this.writer.write("Content-length: " + length + "\r\n");
+		this.writer.write("Content-type: " + contentType + "\r\n\r\n");
+		this.writer.flush();
 	}
-
+	
+	public void sendHeader(String responseCode, String contentType) throws IOException {
+		this.writer.write(responseCode + "\r\n");
+		this.writer.write("Server: JHTTP 2.0\r\n");
+		this.writer.write("Transfer-Encoding: chunked\r\n");
+		this.writer.write("Content-type: " + contentType + "\r\n\r\n");
+		this.writer.flush();
+	}
 }

@@ -1,20 +1,18 @@
 [
 	{
-		"url": "/test",
-		"packageName": "com.example.java.was.controller",
+		"url": "/Hello",
+		"packageName": "com.example.java.simple.controller",
 		"methodName": "GET",
-		"responseMethod": "test",
-		"controllerName": "TestController",
+		"htmlPath":"intex",
 		"headers": [
 			"Accept=application/json"
 		]
 	},
 	{
-		"url": "/basic",
-		"packageName": "com.example.java.was.controller",
+		"url": "/Time",
+		"packageName": "com.example.java.simple.controller",
 		"methodName": "GET",
-		"responseMethod": "textBasic",
-		"controllerName": "TestController",
+		"htmlPath":"time",
 		"headers": [
 			"Accept=application/json"
 		]

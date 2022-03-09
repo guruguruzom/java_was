@@ -7,8 +7,7 @@ public class UrlMapper {
 	private String url;
 	private String packageName;
 	private String methodName;
-	private String responseMethod;
-	private String controllerName;
+	private String htmlPath;
 	private List<String> headers;
 
 	public String getUrl() {
@@ -35,28 +34,20 @@ public class UrlMapper {
 		this.methodName = methodName;
 	}
 
-	public String getResponseMethod() {
-		return responseMethod;
-	}
-
-	public void setResponseMethod(String responseMethod) {
-		this.responseMethod = responseMethod;
-	}
-
-	public String getControllerName() {
-		return controllerName;
-	}
-
-	public void setControllerName(String controllerName) {
-		this.controllerName = controllerName;
-	}
-
 	public List<String> getHeaders() {
 		return headers;
+	}
+
+	public String getHtmlPath() {
+		return htmlPath;
+	}
+
+	public void setHtmlPath(String htmlPath) {
+		this.htmlPath = htmlPath;
 	}
 
 	public void setHeaders(List<String> headers) {
 		this.headers = headers;
 	}
-
+	
 }

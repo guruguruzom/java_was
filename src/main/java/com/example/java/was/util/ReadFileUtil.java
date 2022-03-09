@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -22,6 +23,8 @@ public class ReadFileUtil {
 		// JSON 파일 읽기
 		Reader reader = new FileReader(filePath);
 		JSONObject jsonObject = (JSONObject) parser.parse(reader);
+		reader.close();
+		
 		return jsonObject;
 	} 
 	
@@ -30,7 +33,23 @@ public class ReadFileUtil {
 		JSONParser parser = new JSONParser();
 		// JSON 파일 읽기
 		Reader reader = new FileReader(filePath);
-		JSONArray jsonObject = (JSONArray) parser.parse(reader);
-		return jsonObject;
+		JSONArray jsonArray = (JSONArray) parser.parse(reader);
+		reader.close();
+		
+		return jsonArray;
+	}
+	
+	public static String getHtmlBody(String filePath) throws IOException, ParseException
+	{
+		Reader reader = new FileReader(filePath);
+		
+		StringBuilder requestLine = new StringBuilder();
+		int intValueOfChar;
+		while ((intValueOfChar = reader.read()) != -1)  {
+            requestLine.append((char) intValueOfChar);
+        }
+		reader.close();
+		
+		return requestLine.toString();
 	} 
 }

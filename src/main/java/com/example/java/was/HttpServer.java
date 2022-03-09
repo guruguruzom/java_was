@@ -31,7 +31,7 @@ public class HttpServer {
     private static final String CONFIG_PATH = "\\src\\main\\resources\\";
     private static final String CONFIG_FILE = "config.json";
     private static final String HTTP_METHOD_CONFIG_FILE = "url-mapping.json";
-    private static final String WEB_PATH = "templates";
+    private static final String WEB_PATH = "templates\\";
     private final File rootDirectory;
     private final int port;
 
@@ -66,9 +66,12 @@ public class HttpServer {
     	//SpringApplication.run(HttpServer.class, args);
     	//config setting
     	String path = System.getProperty("user.dir");
-    	JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
+    	
     	ConfigSingleton configSingleton = ConfigSingleton.ConfigInstance();
-    	configSingleton.setConfig(configJson.toString());
+    	//JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
+    	//configSingleton.setConfig(configJson.toString());
+    	configSingleton.setConfig(path + CONFIG_PATH, CONFIG_FILE, WEB_PATH);
+    	//configSingleton.set
     	
     	//http method mapping
     	JSONArray urlMapperJson = ReadFileUtil.getJsonArray(path + CONFIG_PATH + HTTP_METHOD_CONFIG_FILE);
@@ -79,7 +82,7 @@ public class HttpServer {
         // get the Document root
         File docroot;
         try {
-            docroot = new File(path + CONFIG_PATH + WEB_PATH);
+            docroot = new File(configSingleton.getDocPath());
         } catch (ArrayIndexOutOfBoundsException ex) {
             System.out.println("Usage: java JHTTP docroot port");
             return;

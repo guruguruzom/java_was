@@ -24,6 +24,6 @@ public enum HttpMethod {
 			}
 		}
 		
-		throw new Exception("Invalid ServiceCode");
+		throw new Exception("Invalid Value");
 	}
 }

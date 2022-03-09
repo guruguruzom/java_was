@@ -1,5 +1,4 @@
 {
     "port" : 8080,
-    "suffix" : ".html",
-    "errorPath" : "errorPage"
+    "suffix" : ".html"
 }

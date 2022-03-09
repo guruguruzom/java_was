@@ -23,14 +23,13 @@ public class ConfigSingleton {
 		return instance;
 	}
 	
-	public void setConfig(String path, String file, String webPath) {
+	public void setConfig(String path, String file) {
 		
 		try {
 			JSONObject configJson;
 			configJson = ReadFileUtil.getJsonObject(path + file);
 			ObjectMapper mapper = new ObjectMapper();
 			config = mapper.readValue(configJson.toString(), Config.class);
-			config.setDocPath(path + webPath);
 		} catch (JsonMappingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,11 +66,4 @@ public class ConfigSingleton {
 		return config.getSuffix();
 	}
 
-	public String getErrorPath() {
-		return config.getErrorPath();
-	}
-	
-	public String getDocPath() {
-		return config.getDocPath();
-	}
 }

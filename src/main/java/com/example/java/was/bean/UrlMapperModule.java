@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 public class UrlMapperModule {
 	private static UrlMapperModule instansce;
 	private Map<String, UrlMapper> urlMappers = new HashMap<>();
-
+	
 	public static UrlMapperModule ModuleInstance() {
 		if (instansce == null) {
 			instansce = new UrlMapperModule();
@@ -36,7 +36,6 @@ public class UrlMapperModule {
 				urlMappers.put(urlMapper.getUrl(), urlMapper);
 				//urlMapperJson.get(i);
 			}
-			System.out.println(urlMappers.toString());
 		} catch (JsonMappingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,7 +46,14 @@ public class UrlMapperModule {
 	}
 
 	public UrlMapper getUrlInfo(String url) {
-
-		return (UrlMapper) urlMappers.get(url);
+		UrlMapper urlMapper = (UrlMapper) urlMappers.get(url);
+		//urlMappers에 키값이 없다면 404이 아닌 키값 추가
+		if(urlMapper == null) {
+			urlMapper = new UrlMapper();
+			urlMapper.setUrl(url);
+			urlMapper.setHtmlPath("\\" + url.substring(1, url.length()));
+			urlMappers.put(url, urlMapper);
+		}
+		return urlMapper;
 	}
 }

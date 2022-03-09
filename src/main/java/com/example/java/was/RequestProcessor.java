@@ -20,10 +20,12 @@ import com.example.java.was.model.UrlMapper;
 import com.example.java.was.util.HttpRequestUtil;
 import com.example.java.was.util.HttpResponseUtil;
 import com.example.java.was.util.ReadFileUtil;
+import com.example.java.was.valueset.ResponseCode;
 
 public class RequestProcessor implements Runnable {
     private final static Logger logger = Logger.getLogger(RequestProcessor.class.getCanonicalName());
     private static final String TEMPLATE_PATH = "\\src\\main\\resources\\templates";
+    private static final String PAKAGE_PATH = "com.example.java.simple.controller";
     private File rootDirectory;
     private String indexFileName = "index.html";
     private Socket connection;
@@ -46,53 +48,77 @@ public class RequestProcessor implements Runnable {
     @Override
     public void run() {
     	ConfigSingleton configSingleton =  ConfigSingleton.ConfigInstance();
-    	
     	UrlMapperModule urlMapperModule = UrlMapperModule.ModuleInstance();
     	
         String root = rootDirectory.getPath();
         try {
-            //OutputStream raw = new BufferedOutputStream(connection.getOutputStream());
-            
-            HttpResponse httpResponse = HttpResponseUtil.setHttpResponse(connection.getOutputStream());
+            System.out.println(rootDirectory);
             HttpRequest httpRequest = HttpRequestUtil.setHttpRequest(connection.getInputStream());
-            //exe 호출 검출
+            HttpResponse httpResponse = HttpResponseUtil.setHttpResponse(connection.getOutputStream());
+            
+            UrlMapper urlMapper = urlMapperModule.getUrlInfo(httpRequest.getUrl());
+            
+            File filePath = new File(rootDirectory, urlMapper.getUrl().substring(1, urlMapper.getUrl().length()) + configSingleton.getSuffix());
+            
+            //잘못된 url 검출
             Boolean isValidateUrl = HttpRequestUtil.isValidateUrl(httpRequest.getUrl());
             
-            if(isValidateUrl == false) {
+            ResponseCode reponseCode = ResponseCode.OK;
+            //root 폴더 접근 및 .exe 실행 방지
+            if (!filePath.canRead()
+                    || !filePath.getCanonicalPath().startsWith(root)
+            		|| !isValidateUrl){
             	//TODO:403 error
+            	reponseCode = ResponseCode.FORBIDDEN;
+            	urlMapper = urlMapperModule.getUrlInfo("/error403");
             }
+            if(urlMapper == null) {
+            	//TODO:403 error
+            	System.out.println("404");
+            	reponseCode = ResponseCode.NOT_FOUND;
+            	urlMapper = urlMapperModule.getUrlInfo("/error404");
+            }
+            
+            //mapping된 html 접근
+        	StringBuilder htmlPath = new StringBuilder();
+			htmlPath.append(rootDirectory)
+					.append(urlMapper.getHtmlPath())
+					.append(configSingleton.getSuffix());
             
             //1.file path를 찾는다
             //2.file path는 매핑되어 있다.
-            
             try {
-            	UrlMapper urlMapper = urlMapperModule.getUrlInfo(httpRequest.getUrl());
             	
-            	StringBuilder htmlPath = new StringBuilder();
-				htmlPath.append(configSingleton.getDocPath())
-						.append(urlMapper.getHtmlPath())
-						.append(configSingleton.getSuffix());
-				
 				String body = ReadFileUtil.getHtmlBody(htmlPath.toString());
 				
-				//param : responseCode, ontentType
-				httpResponse.sendHeader("HTTP/1.1 200 OK", 
-										"text/html; charset=utf-8");
-				httpResponse.getWriter().write(body);
+				//reponseType이 성공일때만 classMethod에 접근
+				if(reponseCode.getReponseType().equals("success")) {
+					httpResponse.sendHeader(reponseCode, 
+											"text/html; charset=utf-8",
+											null);
+					
+					httpResponse.getWriter().write(body);
+					
+					//임시 parameter 처리
+	            	httpRequest.setParameter("name", "name");
+	            	SimpleServlet classMethod = HttpResponseUtil.getClass(urlMapper, PAKAGE_PATH);
+					classMethod.service(httpRequest, httpResponse);
+					
+				} else {
+					httpResponse.sendHeader(reponseCode, 
+											"text/html; charset=utf-8",
+											body.length());
+					
+					httpResponse.getWriter().write(body);
+				}
 				
-            	httpRequest.setParameter("name", "name");
-            	SimpleServlet classMethod = HttpResponseUtil.getClass(urlMapper);
-				classMethod.service(httpRequest, httpResponse);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
             
-            
             httpResponse.getWriter().flush();
             httpResponse.getWriter().close();
-            //.flush();
-            
   
         } catch (IOException ex) {
             logger.log(Level.WARNING, "Error talking to " + connection.getRemoteSocketAddress(), ex);

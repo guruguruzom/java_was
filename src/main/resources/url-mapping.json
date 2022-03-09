@@ -1,20 +1,18 @@
 [
 	{
-		"url": "/Hello",
-		"packageName": "com.example.java.simple.controller",
-		"methodName": "GET",
-		"htmlPath":"intex",
-		"headers": [
-			"Accept=application/json"
-		]
+		"url": "/error403",
+		"htmlPath":"\\error\\error403"
 	},
 	{
-		"url": "/Time",
-		"packageName": "com.example.java.simple.controller",
-		"methodName": "GET",
-		"htmlPath":"time",
-		"headers": [
-			"Accept=application/json"
-		]
+		"url": "/error404",
+		"htmlPath":"\\error\\error404"
+	},
+	{
+		"url": "/error500",
+		"htmlPath":"\\error\\error500"
+	},
+	{
+		"url": "/Hello",
+		"htmlPath":"\\Hello"
 	}
 ]

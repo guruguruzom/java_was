@@ -63,15 +63,11 @@ public class HttpServer {
 
     public static void main(String[] args) throws Exception, IOException, ParseException{
     	
-    	//SpringApplication.run(HttpServer.class, args);
-    	//config setting
     	String path = System.getProperty("user.dir");
     	
+    	//config 설정
     	ConfigSingleton configSingleton = ConfigSingleton.ConfigInstance();
-    	//JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
-    	//configSingleton.setConfig(configJson.toString());
-    	configSingleton.setConfig(path + CONFIG_PATH, CONFIG_FILE, WEB_PATH);
-    	//configSingleton.set
+    	configSingleton.setConfig(path + CONFIG_PATH, CONFIG_FILE);
     	
     	//http method mapping
     	JSONArray urlMapperJson = ReadFileUtil.getJsonArray(path + CONFIG_PATH + HTTP_METHOD_CONFIG_FILE);
@@ -82,7 +78,7 @@ public class HttpServer {
         // get the Document root
         File docroot;
         try {
-            docroot = new File(configSingleton.getDocPath());
+            docroot = new File(path + CONFIG_PATH + WEB_PATH);
         } catch (ArrayIndexOutOfBoundsException ex) {
             System.out.println("Usage: java JHTTP docroot port");
             return;

@@ -14,6 +14,8 @@ import com.example.java.was.model.UrlMapper;
 
 public class HttpResponseUtil {
 	
+	
+	
 	public static HttpResponse setHttpResponse(OutputStream outputStream) {
 		OutputStream raw = new BufferedOutputStream(outputStream);
         Writer out = new OutputStreamWriter(raw);
@@ -22,15 +24,12 @@ public class HttpResponseUtil {
         return httpResponse;
 	}
 	
-	public static void setHeader(HttpResponse httpResponse, String responseCode, String contentType, int length) throws IOException{
-		httpResponse.setHeader(responseCode, contentType, length);
-	}
 	
-	public static SimpleServlet getClass(UrlMapper urlMapper) {
+	public static SimpleServlet getClass(UrlMapper urlMapper, String packagePath) {
 		try {
 
 			String controllerName = urlMapper.getUrl().replace("/", "");
-			Class<SimpleServlet> cls = (Class<SimpleServlet>)Class.forName(urlMapper.getPackageName() + "." + controllerName);
+			Class<SimpleServlet> cls = (Class<SimpleServlet>)Class.forName(packagePath + "." + controllerName);
 			
 			//함수명 설정 실행 interface 요구사항으로 제외
 			//Method m = cls.getMethod("service",String.class);

@@ -7,25 +7,28 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.springframework.boot.SpringApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.java.was.bean.ConfigSingleton;
 import com.example.java.was.bean.UrlMapperModule;
 import com.example.java.was.util.ReadFileUtil;
 
+
+
 /**
  * Created by cybaek on 15. 5. 22..
  */
 @SpringBootApplication
 public class HttpServer {
-    private static final Logger logger = Logger.getLogger(HttpServer.class.getCanonicalName());
+	
+	private static Logger logger = LoggerFactory.getLogger(HttpServer.class);
+	
     private static final int NUM_THREADS = 50;
     private static final String INDEX_FILE = "index.html";
     private static final String CONFIG_PATH = "\\src\\main\\resources\\";
@@ -47,15 +50,15 @@ public class HttpServer {
     public void start() throws IOException {
         ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
         try (ServerSocket server = new ServerSocket(port)) {
-            logger.info("Accepting connections on port " + server.getLocalPort());
-            logger.info("Document Root: " + rootDirectory);
+        	logger.info("Accepting connections on port: " + server.getLocalPort());
+        	logger.info("Document Root: " + rootDirectory);
             while (true) {
                 try {
                     Socket request = server.accept();
                     Runnable r = new RequestProcessor(rootDirectory, INDEX_FILE, request);
                     pool.submit(r);
                 } catch (IOException ex) {
-                    logger.log(Level.WARNING, "Error accepting connection", ex);
+                	logger.error(ex.getMessage(), ex);
                 }
             }
         }
@@ -74,13 +77,12 @@ public class HttpServer {
     	UrlMapperModule urlMapperModule = UrlMapperModule.ModuleInstance();
     	urlMapperModule.setUrlMapper(urlMapperJson);
     	
-		
         // get the Document root
         File docroot;
         try {
             docroot = new File(path + CONFIG_PATH + WEB_PATH);
         } catch (ArrayIndexOutOfBoundsException ex) {
-            System.out.println("Usage: java JHTTP docroot port");
+        	logger.error(ex.getMessage(), ex);
             return;
         }
         // set the port to listen on
@@ -95,7 +97,7 @@ public class HttpServer {
             HttpServer webserver = new HttpServer(docroot, port);
             webserver.start();
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Server could not start", ex);
+        	logger.error(ex.getMessage(), ex);
         }
     }
 }

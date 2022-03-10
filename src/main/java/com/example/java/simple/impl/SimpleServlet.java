@@ -1,4 +1,4 @@
-package com.example.java.simple.controller.impl;
+package com.example.java.simple.impl;
 
 import com.example.java.was.model.HttpRequest;
 import com.example.java.was.model.HttpResponse;

@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 
-import com.example.java.simple.controller.impl.SimpleServlet;
+import com.example.java.simple.impl.SimpleServlet;
 import com.example.java.was.controller.TestController;
 import com.example.java.was.model.HttpResponse;
 import com.example.java.was.model.UrlMapper;

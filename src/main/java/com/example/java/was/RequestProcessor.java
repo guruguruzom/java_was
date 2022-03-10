@@ -2,18 +2,14 @@ package com.example.java.was;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.json.simple.parser.ParseException;
 
-import com.example.java.simple.controller.impl.SimpleServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.example.java.simple.impl.SimpleServlet;
 import com.example.java.was.bean.ConfigSingleton;
 import com.example.java.was.bean.UrlMapperModule;
-import com.example.java.was.controller.TestController;
 import com.example.java.was.model.HttpRequest;
 import com.example.java.was.model.HttpResponse;
 import com.example.java.was.model.UrlMapper;
@@ -23,8 +19,10 @@ import com.example.java.was.util.ReadFileUtil;
 import com.example.java.was.valueset.ResponseCode;
 
 public class RequestProcessor implements Runnable {
-	private final static Logger logger = Logger.getLogger(RequestProcessor.class.getCanonicalName());
-	private static final String PAKAGE_PATH = "com.example.java.simple.controller";
+	
+	private static Logger logger = LoggerFactory.getLogger(RequestProcessor.class);
+	
+	private static final String PAKAGE_PATH = "com.example.java.simple";
 	private File rootDirectory;
 	private Socket connection;
 
@@ -54,19 +52,25 @@ public class RequestProcessor implements Runnable {
 			httpResponse = HttpResponseUtil.setHttpResponse(connection.getOutputStream());
 
 			UrlMapper urlMapper = urlMapperModule.getUrlInfo(httpRequest.getUrl());
-
+			
 			File filePath = new File(rootDirectory,
 					urlMapper.getUrl().substring(1, urlMapper.getUrl().length()) + configSingleton.getSuffix());
 
 			// 잘못된 url 검출
 			Boolean isValidateUrl = HttpRequestUtil.isValidateUrl(httpRequest.getUrl());
-
-			// root 폴더 접근 및 .exe 실행 방지
-			if (!filePath.canRead() || !filePath.getCanonicalPath().startsWith(root) || !isValidateUrl) {
-				// TODO:403 error
+			
+			//500 error 강제 발생 테스트
+//			if (httpRequest.getUrl().equals("/forced500error")) {
+//				List<String> error = new ArrayList<>();
+//				String aa = error.get(2);
+//			} 
+			if (!filePath.getCanonicalPath().startsWith(root) || !isValidateUrl) {
+				logger.error(ResponseCode.FORBIDDEN.getErrorType());
 				serverError(ResponseCode.FORBIDDEN, httpRequest, httpResponse);
-			} else if (urlMapper == null) {
-				// TODO:403 error
+			} else if (!filePath.canRead()) {
+				logger.error(ResponseCode.NOT_FOUND.getErrorType());
+				//읽을 수 없는 파일이라면 url mapping map에서 삭제
+				urlMapperModule.deleteUrlInfo(httpRequest.getUrl());
 				serverError(ResponseCode.NOT_FOUND, httpRequest, httpResponse);
 			} else {
 				StringBuilder htmlPath = new StringBuilder();
@@ -91,12 +95,13 @@ public class RequestProcessor implements Runnable {
 			httpResponse.getWriter().close();
 
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "Error talking to " + connection.getRemoteSocketAddress(), e);
+			logger.error(e.getMessage(), e);
 			serverError(ResponseCode.SERVER_ERROR, httpRequest, httpResponse);
 		} finally {
 			try {
 				connection.close();
 			} catch (IOException ex) {
+				logger.error(ex.getMessage(), ex);
 			}
 		}
 	}
@@ -109,11 +114,15 @@ public class RequestProcessor implements Runnable {
 		UrlMapper urlMapper = urlMapperModule.getUrlInfo("/error" + responseCode.getResponseCode());
 		htmlPath.append(rootDirectory).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
 		try {
+			
 			String body = ReadFileUtil.getHtmlBody(htmlPath.toString());
 			httpResponse.sendHeader(responseCode, "text/html; charset=utf-8", body.length());
 			httpResponse.getWriter().write(body);
+			httpResponse.getWriter().flush();
+			httpResponse.getWriter().close();
 		} catch (IOException | ParseException e1) {
 			// TODO Auto-generated catch block
+			logger.error(e1.getMessage(), e1);
 			e1.printStackTrace();
 		}
 

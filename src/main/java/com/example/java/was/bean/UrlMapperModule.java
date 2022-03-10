@@ -56,4 +56,8 @@ public class UrlMapperModule {
 		}
 		return urlMapper;
 	}
+	
+	public void deleteUrlInfo(String url) {
+		urlMappers.remove(url);
+	}
 }

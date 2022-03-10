@@ -56,17 +56,16 @@
 		    <groupId>junit</groupId>
 		    <artifactId>junit</artifactId>
 		    <version>4.12</version>
-		    <scope>test</scope>
 		</dependency>
 				
 		
 	</dependencies>
 
 	<build>
-		<finalName>web-application-server</finalName>
+		<!-- <finalName>web-application-server</finalName>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<testOutputDirectory>target/test-classes</testOutputDirectory> -->
 		
 		<plugins>
 			<plugin>

@@ -4,13 +4,17 @@ package com.example.java.was;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.json.simple.JSONObject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,8 +22,13 @@ import com.example.java.was.model.ConfigModel;
 import com.example.java.was.util.ReadFileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/*@RunWith(Parameterized.class)
+@ContextConfiguration(classes = HttpServerTests.class)*/
+
+//@RunWith(SpringRunner.class)
 @RunWith(SpringRunner.class)
-class ApplicationTests {
+//@SpringBootTest
+public class HttpServerTests {
 
 	private static Logger logger = LoggerFactory.getLogger(HttpServer.class);
 	
@@ -33,6 +42,7 @@ class ApplicationTests {
 	 * */
 	@Test
 	public void testVirtualHost() throws Exception {
+		
 		responseApi("http://a.com",config.getPort(),"/Hello", HttpStatus.OK);
 		responseApi("http://b.com",config.getPort(),"/Hello", HttpStatus.OK);
 	}
@@ -44,6 +54,7 @@ class ApplicationTests {
 	 * */
 	@Test
 	public void testTemplate() throws Exception {
+		
 		responseApi("http://localhost",config.getPort(),"/Time", HttpStatus.OK);
 		responseApi("http://127.0.0.1",config.getPort(),"/Time", HttpStatus.OK);
 		//localhost에서 호출 시 404에러 발생
@@ -62,11 +73,11 @@ class ApplicationTests {
 	public void testErrorPage() throws Exception {
 		
 		//404 html이 존재하지 않는 페이지 호출
-		responseApi("http://localhost",config.getPort(),"/not", HttpStatus.NOT_FOUND);
+		//responseApi("http://localhost",config.getPort(),"/not", HttpStatus.NOT_FOUND);
 		//403 error 상위폴더 접근
-		responseApi("http://localhost",config.getPort(),"/../", HttpStatus.OK);
+		//responseApi("http://localhost",config.getPort(),"/../", HttpStatus.FORBIDDEN);
 		//403 .exe 호출
-		responseApi("http://localhost",config.getPort(),"/.exe", HttpStatus.FORBIDDEN);
+		//responseApi("http://localhost",config.getPort(),"/.exe", HttpStatus.FORBIDDEN);
 		//500 .exe 호출
 		//responseApi("http://localhost",config.getPort(),"/forced500error", HttpStatus.FORBIDDEN);
 	}
@@ -100,7 +111,7 @@ class ApplicationTests {
 		responseApi("http://localhost",config.getPort(),"/Time", HttpStatus.OK);
 	}
 	
-	@BeforeEach
+	@Before
 	public void setConfig() throws Exception{
 		String path = System.getProperty("user.dir");
 		JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);

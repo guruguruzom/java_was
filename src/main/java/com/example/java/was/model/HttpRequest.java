@@ -3,27 +3,31 @@ package com.example.java.was.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.java.was.valueset.HttpMethod;
-
 public class HttpRequest {
-	private HttpMethod method;
+	
+	/**
+	 * type			name			info
+	 * String		method 			Method type(구현되지 않음)
+	 * String		url 			url 정보값
+	 * Map<S,S>		param			파라미터 정보값(key값으로 받는 부분 구현되지 않음)
+	 * */
+	private String method;
 	private String url;
 	private Map<String, String> param = new HashMap<String, String>();
 
-	public HttpMethod getMethod() {
+	public String getMethod() {
 		return method;
 	}
 
-	public void setMethod(String method) {
-		try {
-			this.method = HttpMethod.getEnumFromString(method);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public Map<String, String> getParam() {
+		return param;
 	}
 
-	public void setMethod(HttpMethod method) {
+	public void setParam(Map<String, String> param) {
+		this.param = param;
+	}
+
+	public void setMethod(String method) {
 		this.method = method;
 	}
 

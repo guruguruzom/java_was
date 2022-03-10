@@ -14,12 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.java.was.model.Config;
+import com.example.java.was.model.ConfigModel;
 import com.example.java.was.util.ReadFileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-//@SpringBootTest
-@RunWith(SpringRunner.class) // (1)
+@RunWith(SpringRunner.class)
 class ApplicationTests {
 
 	private static Logger logger = LoggerFactory.getLogger(HttpServer.class);
@@ -27,15 +26,15 @@ class ApplicationTests {
 	private static final String CONFIG_PATH = "\\src\\main\\resources\\";
 	private static final String CONFIG_FILE = "config.json";
 	
-	private Config config;
+	private ConfigModel config;
 	/*
 	 * 1. HTTP/1.1 의 Host 헤더를 해석하세요.
 	 *  - C:\Windows\System32\drivers\etc 파일 추가로 설정
 	 * */
 	@Test
 	public void testVirtualHost() throws Exception {
-		responseApi("http://localhost",config.getPort(),"/Hello", HttpStatus.OK);
-		responseApi("http://localhost",config.getPort(),"/Time", HttpStatus.OK);
+		responseApi("http://a.com",config.getPort(),"/Hello", HttpStatus.OK);
+		responseApi("http://b.com",config.getPort(),"/Hello", HttpStatus.OK);
 	}
 	
 	/*
@@ -46,6 +45,9 @@ class ApplicationTests {
 	@Test
 	public void testTemplate() throws Exception {
 		responseApi("http://localhost",config.getPort(),"/Time", HttpStatus.OK);
+		responseApi("http://127.0.0.1",config.getPort(),"/Time", HttpStatus.OK);
+		//localhost에서 호출 시 404에러 발생
+		//responseApi("http://127.0.0.1",config.getPort(),"/Hello", HttpStatus.OK);
 	}
 	
 	/*
@@ -84,6 +86,8 @@ class ApplicationTests {
 	 * */
 	@Test
 	public void testSimple() throws Exception {
+		
+		responseApi("http://localhost",config.getPort(),"/Hello?name=parameter name", HttpStatus.OK);
 		responseApi("http://localhost",config.getPort(),"/Hello", HttpStatus.OK);
 		responseApi("http://localhost",config.getPort(),"/service.Hello", HttpStatus.OK);
 	}
@@ -101,7 +105,7 @@ class ApplicationTests {
 		String path = System.getProperty("user.dir");
 		JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
 		ObjectMapper mapper = new ObjectMapper();
-		config = mapper.readValue(configJson.toString(), Config.class);
+		config = mapper.readValue(configJson.toString(), ConfigModel.class);
 	}
 	
 	private void responseApi(String ip,int port, String url, HttpStatus responseType) throws Exception{
@@ -109,7 +113,6 @@ class ApplicationTests {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(ip).append(":").append(port).append(url);
 		ResponseEntity<String> responseEntity = restTemplate.getForEntity(stringBuilder.toString(), String.class);
-		//assertThat(responseEntity.getStatusCode()).isEqualTo(responseType);
 	}
 	
 	

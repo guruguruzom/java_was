@@ -1,4 +1,4 @@
-package com.example.java.was;
+package com.example.java.was.Handler;
 
 import java.io.*;
 import java.net.Socket;
@@ -8,25 +8,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.java.simple.impl.SimpleServlet;
-import com.example.java.was.bean.ConfigSingleton;
-import com.example.java.was.bean.UrlMapperModule;
 import com.example.java.was.model.HttpRequest;
 import com.example.java.was.model.HttpResponse;
 import com.example.java.was.model.UrlMapper;
+import com.example.java.was.module.ConfigModule;
+import com.example.java.was.module.UrlMapperModule;
 import com.example.java.was.util.HttpRequestUtil;
 import com.example.java.was.util.HttpResponseUtil;
 import com.example.java.was.util.ReadFileUtil;
 import com.example.java.was.valueset.ResponseCode;
 
-public class RequestProcessor implements Runnable {
+public class RequestProcessorHandler implements Runnable {
 	
-	private static Logger logger = LoggerFactory.getLogger(RequestProcessor.class);
+	private static Logger logger = LoggerFactory.getLogger(RequestProcessorHandler.class);
 	
 	private static final String PAKAGE_PATH = "com.example.java.simple";
 	private File rootDirectory;
 	private Socket connection;
 
-	public RequestProcessor(File rootDirectory, String indexFileName, Socket connection) {
+	public RequestProcessorHandler(File rootDirectory, String indexFileName, Socket connection) {
 		if (rootDirectory.isFile()) {
 			throw new IllegalArgumentException("rootDirectory must be a directory, not a file");
 		}
@@ -38,19 +38,33 @@ public class RequestProcessor implements Runnable {
 		this.connection = connection;
 	}
 
+	
 	@Override
 	public void run() {
-		ConfigSingleton configSingleton = ConfigSingleton.ConfigInstance();
+		
+		ConfigModule configSingleton = ConfigModule.ConfigInstance();
+		String rootPath = configSingleton.getRootPath(connection.getInetAddress().toString());
+		
 		UrlMapperModule urlMapperModule = UrlMapperModule.ModuleInstance();
-
+		
+		this.rootDirectory = new File(rootDirectory.getPath() + rootPath);
 		String root = rootDirectory.getPath();
 
 		HttpRequest httpRequest = new HttpRequest();
 		HttpResponse httpResponse = new HttpResponse();
+		
 		try {
 			httpRequest = HttpRequestUtil.setHttpRequest(connection.getInputStream());
 			httpResponse = HttpResponseUtil.setHttpResponse(connection.getOutputStream());
-
+			if(httpRequest == null || httpResponse == null) {
+				logger.error("http setting value is null");
+				return;
+			}
+			if(!httpRequest.getMethod().equals("GET")) {
+				logger.error("This method is not supported");
+				return;
+			}
+			
 			UrlMapper urlMapper = urlMapperModule.getUrlInfo(httpRequest.getUrl());
 			
 			File filePath = new File(rootDirectory,
@@ -75,16 +89,20 @@ public class RequestProcessor implements Runnable {
 			} else {
 				StringBuilder htmlPath = new StringBuilder();
 				htmlPath.append(rootDirectory).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
-				// 1.file path를 찾는다
-				// 2.file path는 매핑되어 있다.
+				
 				String body = ReadFileUtil.getHtmlBody(htmlPath.toString());
 
 				// reponseType이 성공일때만 classMethod에 접근
-				httpResponse.sendHeader(ResponseCode.OK, "text/html; charset=utf-8", null);
+				httpResponse.setReponseCode(ResponseCode.OK);
+				httpResponse.setContentType("text/html; charset=utf-8");
+				HttpResponseUtil.sendHeader(httpResponse);
 				httpResponse.getWriter().write(body);
 
 				// 임시 parameter 처리
-				httpRequest.setParameter("name", "name");
+				if(httpRequest.getParameter("name") == null) {
+					httpRequest.setParameter("name", "{name}");
+				}
+				
 				SimpleServlet classMethod = HttpResponseUtil.getClass(urlMapper, PAKAGE_PATH);
 				classMethod.service(httpRequest, httpResponse);
 
@@ -106,20 +124,31 @@ public class RequestProcessor implements Runnable {
 		}
 	}
 
+	/**
+	 * error 발생 시 별도 처리
+	 * @param ResponseCode responseCode
+	 * @param HttpRequest httpRequest
+	 * @param HttpResponse httpResponse
+	 * @return
+	 * @throws
+	 */
 	public void serverError(ResponseCode responseCode, HttpRequest httpRequest, HttpResponse httpResponse) {
-		ConfigSingleton configSingleton = ConfigSingleton.ConfigInstance();
+		ConfigModule configSingleton = ConfigModule.ConfigInstance();
 		UrlMapperModule urlMapperModule = UrlMapperModule.ModuleInstance();
 
 		StringBuilder htmlPath = new StringBuilder();
 		UrlMapper urlMapper = urlMapperModule.getUrlInfo("/error" + responseCode.getResponseCode());
-		htmlPath.append(rootDirectory).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
+		htmlPath.append(rootDirectory.getParent()).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
 		try {
 			
 			String body = ReadFileUtil.getHtmlBody(htmlPath.toString());
-			httpResponse.sendHeader(responseCode, "text/html; charset=utf-8", body.length());
+			httpResponse.setReponseCode(responseCode);
+			httpResponse.setContentType("text/html; charset=utf-8");
+			httpResponse.setLength(body.length());
+			HttpResponseUtil.sendHeader(httpResponse);
 			httpResponse.getWriter().write(body);
 			httpResponse.getWriter().flush();
-			httpResponse.getWriter().close();
+			//httpResponse.getWriter().close();
 		} catch (IOException | ParseException e1) {
 			// TODO Auto-generated catch block
 			logger.error(e1.getMessage(), e1);

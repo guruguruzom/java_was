@@ -1,4 +1,15 @@
 {
     "port" : 8080,
-    "suffix" : ".html"
+    "suffix" : ".html",
+    "defualtHost":"templates\\",
+    "host" : [
+			{
+				"ip":"/127.0.0.1",
+				"rootPath":"\\home1\\"	
+			},
+			{
+				"ip":"/0:0:0:0:0:0:0:1",
+				"rootPath":"\\home2\\"
+			}
+		]
 }

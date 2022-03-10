@@ -15,8 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.example.java.was.bean.ConfigSingleton;
-import com.example.java.was.bean.UrlMapperModule;
+import com.example.java.was.Handler.RequestProcessorHandler;
+import com.example.java.was.module.ConfigModule;
+import com.example.java.was.module.UrlMapperModule;
 import com.example.java.was.util.ReadFileUtil;
 
 
@@ -34,7 +35,7 @@ public class HttpServer {
     private static final String CONFIG_PATH = "\\src\\main\\resources\\";
     private static final String CONFIG_FILE = "config.json";
     private static final String HTTP_METHOD_CONFIG_FILE = "url-mapping.json";
-    private static final String WEB_PATH = "templates\\";
+    private static final String WEB_ROOT = "templates\\";
     private final File rootDirectory;
     private final int port;
 
@@ -54,8 +55,10 @@ public class HttpServer {
         	logger.info("Document Root: " + rootDirectory);
             while (true) {
                 try {
+                	
                     Socket request = server.accept();
-                    Runnable r = new RequestProcessor(rootDirectory, INDEX_FILE, request);
+                    
+                    Runnable r = new RequestProcessorHandler(rootDirectory, INDEX_FILE, request);
                     pool.submit(r);
                 } catch (IOException ex) {
                 	logger.error(ex.getMessage(), ex);
@@ -69,7 +72,7 @@ public class HttpServer {
     	String path = System.getProperty("user.dir");
     	
     	//config 설정
-    	ConfigSingleton configSingleton = ConfigSingleton.ConfigInstance();
+    	ConfigModule configSingleton = ConfigModule.ConfigInstance();
     	configSingleton.setConfig(path + CONFIG_PATH, CONFIG_FILE);
     	
     	//http method mapping
@@ -80,7 +83,8 @@ public class HttpServer {
         // get the Document root
         File docroot;
         try {
-            docroot = new File(path + CONFIG_PATH + WEB_PATH);
+        	System.out.println(path + CONFIG_PATH + WEB_ROOT);
+            docroot = new File(path + CONFIG_PATH + WEB_ROOT);
         } catch (ArrayIndexOutOfBoundsException ex) {
         	logger.error(ex.getMessage(), ex);
             return;

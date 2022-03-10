@@ -1,16 +1,21 @@
 package com.example.java.was.model;
 
-import java.io.IOException;
 import java.io.Writer;
-import java.util.Date;
 
 import com.example.java.was.valueset.ResponseCode;
 
 public class HttpResponse {
+	/**
+	 * type			name			info
+	 * Writer		writer			file 내용 작성을 위한 writer, java class 전송을 위함
+	 * String		contentType  	header contentType
+	 * ResponseCode	reponseCode  	header respo
+	 * Integer		length 		 	header 길이, class 접근 시 알 수 없으므로 
+	 */
 	private Writer writer;
-	private String responseCode;
 	private String contentType;
-	private int length;
+	private ResponseCode reponseCode;
+	private Integer length = null;
 
 	public Writer getWriter() {
 		return writer;
@@ -20,12 +25,20 @@ public class HttpResponse {
 		this.writer = writer;
 	}
 
-	public String getResponseCode() {
-		return responseCode;
+	public int getReponseCode() {
+		return reponseCode.getResponseCode();
+	}
+	
+	public int getResponseCode() {
+		return reponseCode.getResponseCode();
 	}
 
-	public void setResponseCode(String responseCode) {
-		this.responseCode = responseCode;
+	public String getErrorType() {
+		return reponseCode.getErrorType();
+	}
+
+	public void setReponseCode(ResponseCode reponseCode) {
+		this.reponseCode = reponseCode;
 	}
 
 	public String getContentType() {
@@ -36,25 +49,11 @@ public class HttpResponse {
 		this.contentType = contentType;
 	}
 
-	public int getLength() {
+	public Integer getLength() {
 		return length;
 	}
 
-	public void setLength(int length) {
+	public void setLength(Integer length) {
 		this.length = length;
-	}
-
-	public void sendHeader(ResponseCode reponseCode, String contentType, Integer length) throws IOException {
-		
-		this.writer.write("HTTP/1.1 " + reponseCode.getResponseCode() + " " + reponseCode.getErrorType() + "\r\n");
-		Date now = new Date();
-		this.writer.write("Date: " + now + "\r\n");
-		this.writer.write("Server: JHTTP 2.0\r\n");
-		if(length != null) {
-			this.writer.write("Content-length: " + length + "\r\n");
-		}
-		
-		this.writer.write("Content-type: " + contentType + "\r\n\r\n");
-		this.writer.flush();
 	}
 }

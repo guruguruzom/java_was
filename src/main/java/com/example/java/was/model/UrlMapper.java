@@ -1,13 +1,14 @@
 package com.example.java.was.model;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class UrlMapper {
+	/**
+	 * type			name			info
+	 * String		url 			user가 호출하는 url string
+	 * String		htmlPath 		root/resources/tamplates 내부의 html 파일 path
+	 * */
 	private String url;
 	private String htmlPath;
 
-	
 	public String getUrl() {
 		return url;
 	}

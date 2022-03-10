@@ -63,6 +63,11 @@
 	</dependencies>
 
 	<build>
+		<finalName>web-application-server</finalName>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

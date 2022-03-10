@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<property name="LOG_DIR" value="${catalina.home}/logs/logback"></property>
+	<property name="LOG_DIR" value="C:/logs/logback"></property>
 	
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 	

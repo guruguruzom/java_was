@@ -1,0 +1,18 @@
+[
+	{
+		"url": "/error403",
+		"htmlPath":"\\error\\error403"
+	},
+	{
+		"url": "/error404",
+		"htmlPath":"\\error\\error404"
+	},
+	{
+		"url": "/error500",
+		"htmlPath":"\\error\\error500"
+	},
+	{
+		"url": "/Hello",
+		"htmlPath":"\\Hello"
+	}
+]

@@ -1,7 +1,11 @@
 package com.example.java.was.Handler;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.json.simple.parser.ParseException;
 
 import org.slf4j.Logger;
@@ -24,9 +28,11 @@ public class RequestProcessorHandler implements Runnable {
 	
 	private static final String PAKAGE_PATH = "com.example.java.simple";
 	private File rootDirectory;
+	//도메인별 변화되는 루트값 저장
+	private File domainRootDirectory;
 	private Socket connection;
-
-	public RequestProcessorHandler(File rootDirectory, String indexFileName, Socket connection) {
+	
+	public RequestProcessorHandler(File rootDirectory, Socket connection) {
 		if (rootDirectory.isFile()) {
 			throw new IllegalArgumentException("rootDirectory must be a directory, not a file");
 		}
@@ -38,17 +44,21 @@ public class RequestProcessorHandler implements Runnable {
 		this.connection = connection;
 	}
 
-	
+	/**
+	 * 사용자 요청에 맞는 값 출력
+	 * @param
+	 * @return
+	 * @throws
+	 * */
 	@Override
 	public void run() {
-		
 		ConfigModule configSingleton = ConfigModule.ConfigInstance();
 		String rootPath = configSingleton.getRootPath(connection.getInetAddress().toString());
 		
 		UrlMapperModule urlMapperModule = UrlMapperModule.ModuleInstance();
 		
-		this.rootDirectory = new File(rootDirectory.getPath() + rootPath);
-		String root = rootDirectory.getPath();
+		domainRootDirectory = new File(rootDirectory.getPath() + rootPath);
+		String root = domainRootDirectory.getPath();
 
 		HttpRequest httpRequest = new HttpRequest();
 		HttpResponse httpResponse = new HttpResponse();
@@ -67,7 +77,7 @@ public class RequestProcessorHandler implements Runnable {
 			
 			UrlMapper urlMapper = urlMapperModule.getUrlInfo(httpRequest.getUrl());
 			
-			File filePath = new File(rootDirectory,
+			File filePath = new File(domainRootDirectory,
 					urlMapper.getUrl().substring(1, urlMapper.getUrl().length()) + configSingleton.getSuffix());
 
 			// 잘못된 url 검출
@@ -88,7 +98,7 @@ public class RequestProcessorHandler implements Runnable {
 				serverError(ResponseCode.NOT_FOUND, httpRequest, httpResponse);
 			} else {
 				StringBuilder htmlPath = new StringBuilder();
-				htmlPath.append(rootDirectory).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
+				htmlPath.append(domainRootDirectory).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
 				
 				String body = ReadFileUtil.getHtmlBody(htmlPath.toString());
 
@@ -118,6 +128,7 @@ public class RequestProcessorHandler implements Runnable {
 		} finally {
 			try {
 				connection.close();
+				
 			} catch (IOException ex) {
 				logger.error(ex.getMessage(), ex);
 			}
@@ -138,7 +149,7 @@ public class RequestProcessorHandler implements Runnable {
 
 		StringBuilder htmlPath = new StringBuilder();
 		UrlMapper urlMapper = urlMapperModule.getUrlInfo("/error" + responseCode.getResponseCode());
-		htmlPath.append(rootDirectory.getParent()).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
+		htmlPath.append(domainRootDirectory.getParent()).append(urlMapper.getHtmlPath()).append(configSingleton.getSuffix());
 		try {
 			
 			String body = ReadFileUtil.getHtmlBody(htmlPath.toString());

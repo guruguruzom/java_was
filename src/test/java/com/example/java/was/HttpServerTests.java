@@ -4,21 +4,19 @@ package com.example.java.was;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.json.simple.JSONObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.java.was.model.ConfigModel;
+import com.example.java.was.module.ConfigModule;
 import com.example.java.was.util.ReadFileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,7 +40,6 @@ public class HttpServerTests {
 	 * */
 	@Test
 	public void testVirtualHost() throws Exception {
-		
 		responseApi("http://a.com",config.getPort(),"/Hello", HttpStatus.OK);
 		responseApi("http://b.com",config.getPort(),"/Hello", HttpStatus.OK);
 	}
@@ -113,11 +110,19 @@ public class HttpServerTests {
 	
 	@Before
 	public void setConfig() throws Exception{
+		//httpServer= new HttpServer(null, 0)
+		//HttpServer.serverInit();
 		String path = System.getProperty("user.dir");
 		JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
 		ObjectMapper mapper = new ObjectMapper();
 		config = mapper.readValue(configJson.toString(), ConfigModel.class);
 	}
+//	
+//	@After
+//	public void initServer() {
+//		ConfigModule configSingleton = ConfigModule.ConfigInstance();
+//		configSingleton.setDoThread(false);
+//	}
 	
 	private void responseApi(String ip,int port, String url, HttpStatus responseType) throws Exception{
 		RestTemplate restTemplate = new RestTemplate();
@@ -125,7 +130,6 @@ public class HttpServerTests {
 		stringBuilder.append(ip).append(":").append(port).append(url);
 		ResponseEntity<String> responseEntity = restTemplate.getForEntity(stringBuilder.toString(), String.class);
 	}
-	
 	
 
 }

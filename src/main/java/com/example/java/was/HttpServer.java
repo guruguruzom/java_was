@@ -31,11 +31,10 @@ public class HttpServer {
 	private static Logger logger = LoggerFactory.getLogger(HttpServer.class);
 	
     private static final int NUM_THREADS = 50;
-    private static final String INDEX_FILE = "index.html";
     private static final String CONFIG_PATH = "\\src\\main\\resources\\";
     private static final String CONFIG_FILE = "config.json";
+    private static final String ROOT_PATH = "templates\\";
     private static final String HTTP_METHOD_CONFIG_FILE = "url-mapping.json";
-    private static final String WEB_ROOT = "templates\\";
     private final File rootDirectory;
     private final int port;
 
@@ -47,7 +46,7 @@ public class HttpServer {
         this.rootDirectory = rootDirectory;
         this.port = port;
     }
-
+    
     public void start() throws IOException {
         ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
         try (ServerSocket server = new ServerSocket(port)) {
@@ -55,10 +54,8 @@ public class HttpServer {
         	logger.info("Document Root: " + rootDirectory);
             while (true) {
                 try {
-                	
                     Socket request = server.accept();
-                    
-                    Runnable r = new RequestProcessorHandler(rootDirectory, INDEX_FILE, request);
+                    Runnable r = new RequestProcessorHandler(rootDirectory, request);
                     pool.submit(r);
                 } catch (IOException ex) {
                 	logger.error(ex.getMessage(), ex);
@@ -67,6 +64,8 @@ public class HttpServer {
         }
     }
 
+    
+    
     public static void main(String[] args) throws Exception, IOException, ParseException{
     	
     	String path = System.getProperty("user.dir");
@@ -83,8 +82,7 @@ public class HttpServer {
         // get the Document root
         File docroot;
         try {
-        	System.out.println(path + CONFIG_PATH + WEB_ROOT);
-            docroot = new File(path + CONFIG_PATH + WEB_ROOT);
+            docroot = new File(path + CONFIG_PATH + ROOT_PATH);
         } catch (ArrayIndexOutOfBoundsException ex) {
         	logger.error(ex.getMessage(), ex);
             return;
@@ -104,4 +102,5 @@ public class HttpServer {
         	logger.error(ex.getMessage(), ex);
         }
     }
+    
 }

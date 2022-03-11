@@ -35,7 +35,6 @@ public class HttpServer {
     private static final String CONFIG_FILE = "config.json";
     private static final String ROOT_PATH = "templates\\";
     private static final String HTTP_METHOD_CONFIG_FILE = "url-mapping.json";
-    private final File rootDirectory;
     private final int port;
 
     public HttpServer(File rootDirectory, int port) throws IOException {
@@ -43,36 +42,26 @@ public class HttpServer {
             throw new IOException(rootDirectory
                     + " does not exist as a directory");
         }
-        this.rootDirectory = rootDirectory;
         this.port = port;
     }
     
+    //start 단부터 thread들어감
     public void start() throws IOException {
-        ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
-        try (ServerSocket server = new ServerSocket(port)) {
-        	logger.info("Accepting connections on port: " + server.getLocalPort());
-        	logger.info("Document Root: " + rootDirectory);
-            while (true) {
-                try {
-                    Socket request = server.accept();
-                    Runnable r = new RequestProcessorHandler(rootDirectory, request);
-                    pool.submit(r);
-                } catch (IOException ex) {
-                	logger.error(ex.getMessage(), ex);
-                }
-            }
-        }
+    	ExecutorService pool = Executors.newFixedThreadPool(NUM_THREADS);
+    	Runnable r = new RequestProcessorHandler();
+        pool.submit(r);
     }
-
-    
     
     public static void main(String[] args) throws Exception, IOException, ParseException{
-    	
+    	serverInit();
+    }
+    
+    public static void serverInit() throws Exception, IOException, ParseException{
     	String path = System.getProperty("user.dir");
     	
     	//config 설정
-    	ConfigModule configSingleton = ConfigModule.ConfigInstance();
-    	configSingleton.setConfig(path + CONFIG_PATH, CONFIG_FILE);
+    	ConfigModule configModule = ConfigModule.ConfigInstance();
+    	configModule.setConfig(path + CONFIG_PATH, CONFIG_FILE);
     	
     	//http method mapping
     	JSONArray urlMapperJson = ReadFileUtil.getJsonArray(path + CONFIG_PATH + HTTP_METHOD_CONFIG_FILE);
@@ -83,6 +72,7 @@ public class HttpServer {
         File docroot;
         try {
             docroot = new File(path + CONFIG_PATH + ROOT_PATH);
+            configModule.setRootDirectory(docroot);
         } catch (ArrayIndexOutOfBoundsException ex) {
         	logger.error(ex.getMessage(), ex);
             return;
@@ -90,7 +80,7 @@ public class HttpServer {
         // set the port to listen on
         int port;
         try {
-            port = configSingleton.getPort();
+            port = configModule.getPort();
             if (port < 0 || port > 65535) port = 80;
         } catch (RuntimeException ex) {
             port = 80;

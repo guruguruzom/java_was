@@ -110,19 +110,12 @@ public class HttpServerTests {
 	
 	@Before
 	public void setConfig() throws Exception{
-		//httpServer= new HttpServer(null, 0)
-		//HttpServer.serverInit();
+		HttpServer.serverInit();
 		String path = System.getProperty("user.dir");
 		JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
 		ObjectMapper mapper = new ObjectMapper();
 		config = mapper.readValue(configJson.toString(), ConfigModel.class);
 	}
-//	
-//	@After
-//	public void initServer() {
-//		ConfigModule configSingleton = ConfigModule.ConfigInstance();
-//		configSingleton.setDoThread(false);
-//	}
 	
 	private void responseApi(String ip,int port, String url, HttpStatus responseType) throws Exception{
 		RestTemplate restTemplate = new RestTemplate();

@@ -1,5 +1,6 @@
 package com.example.java.was.module;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ConfigModule {
 	private static ConfigModule instance;
 	private ConfigModel config;
+	private File rootDirectory;
 	private Map<String, String> hosts = new HashMap<>();
 	//스레드 정보 확인
-	private Boolean doThread = true;
 
 	public static ConfigModule ConfigInstance() {
 		if (instance == null) {
@@ -30,13 +31,6 @@ public class ConfigModule {
 		return instance;
 	}
 
-	public Boolean getDoThread(){
-		return doThread;
-	}
-	
-	public void setDoThread (Boolean threadState){
-		this.doThread = threadState;
-	}
 	/**
 	 * 초기 설정 값 세팅 port와 suffix 두 가지
 	 * @param String path
@@ -65,6 +59,14 @@ public class ConfigModule {
 
 	public String getSuffix() {
 		return config.getSuffix();
+	}
+	
+	public File getRootDirectory() {
+		return rootDirectory;
+	}
+	
+	public void setRootDirectory(File rootDirectory) {
+		this.rootDirectory = rootDirectory;
 	}
 	
 	public String getRootPath(String ip) {

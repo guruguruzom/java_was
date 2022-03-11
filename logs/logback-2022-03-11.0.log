@@ -1,0 +1,6 @@
+14:22:52.556 [pool-2-thread-1] [ERROR] c.e.j.was.util.RequestProcessorUtil - Not Found
+14:23:09.213 [pool-2-thread-2] [ERROR] c.e.j.was.util.RequestProcessorUtil - Not Found
+14:26:23.975 [main] [ERROR] com.example.java.was.HttpServer - Index 4 out of bounds for length 1
+java.lang.ArrayIndexOutOfBoundsException: Index 4 out of bounds for length 1
+	at com.example.java.was.HttpServer.serverInit(HttpServer.java:77)
+	at com.example.java.was.HttpServer.main(HttpServer.java:47)

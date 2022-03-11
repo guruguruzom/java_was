@@ -3,8 +3,6 @@ package com.example.java.was;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,11 +18,6 @@ import com.example.java.was.module.ConfigModule;
 import com.example.java.was.module.UrlMapperModule;
 import com.example.java.was.util.ReadFileUtil;
 
-
-
-/**
- * Created by cybaek on 15. 5. 22..
- */
 @SpringBootApplication
 public class HttpServer {
 	
@@ -35,14 +28,12 @@ public class HttpServer {
     private static final String CONFIG_FILE = "config.json";
     private static final String ROOT_PATH = "templates\\";
     private static final String HTTP_METHOD_CONFIG_FILE = "url-mapping.json";
-    private final int port;
 
-    public HttpServer(File rootDirectory, int port) throws IOException {
+    public HttpServer(File rootDirectory) throws IOException {
         if (!rootDirectory.isDirectory()) {
             throw new IOException(rootDirectory
                     + " does not exist as a directory");
         }
-        this.port = port;
     }
     
     //start 단부터 thread들어감
@@ -57,11 +48,13 @@ public class HttpServer {
     }
     
     public static void serverInit() throws Exception, IOException, ParseException{
+    	logger.info("server start");
     	String path = System.getProperty("user.dir");
     	
     	//config 설정
     	ConfigModule configModule = ConfigModule.ConfigInstance();
     	configModule.setConfig(path + CONFIG_PATH, CONFIG_FILE);
+    	
     	
     	//http method mapping
     	JSONArray urlMapperJson = ReadFileUtil.getJsonArray(path + CONFIG_PATH + HTTP_METHOD_CONFIG_FILE);
@@ -83,10 +76,11 @@ public class HttpServer {
             port = configModule.getPort();
             if (port < 0 || port > 65535) port = 80;
         } catch (RuntimeException ex) {
+        	logger.error(ex.getMessage(), ex);
             port = 80;
         }
         try {
-            HttpServer webserver = new HttpServer(docroot, port);
+            HttpServer webserver = new HttpServer(docroot);
             webserver.start();
         } catch (IOException ex) {
         	logger.error(ex.getMessage(), ex);

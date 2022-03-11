@@ -38,6 +38,8 @@ public class RequestProcessorUtil implements Runnable  {
 
 	@Override
 	public void run() {
+		logger.info("connectAddress : " + connection.getInetAddress().toString());
+		
 		ConfigModule configModule = ConfigModule.ConfigInstance();
 		String rootPath = configModule.getRootPath(connection.getInetAddress().toString());
 		

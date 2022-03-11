@@ -29,7 +29,6 @@ public class RequestProcessorHandler implements Runnable {
 			while (true) {
 				try {
 					Socket request = server.accept();
-					//RequestProcessor가 RequestProcessorHandlerd와 같은 thread 상에 존재한다면 host 변경이 불가능함
 					Runnable r = new RequestProcessorUtil(configModule.getRootDirectory(), request);
 					pool.submit(r);
 				} catch (IOException ex) {
@@ -37,6 +36,7 @@ public class RequestProcessorHandler implements Runnable {
 				}
 			}
 		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

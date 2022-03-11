@@ -5,12 +5,12 @@
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 	
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] [%-5level] %logger{36} - %msg%n</pattern>
 		</encoder>
 	
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			
-			<fileNamePattern>${LOG_DIR}\logback-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<fileNamePattern>${LOG_DIR}/logback-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
 				
 				<maxFileSize>100MB</maxFileSize>
@@ -27,7 +27,6 @@
 	
 	<root level="debug">
 		<appender-ref ref="STDOUT"/>
-		<appender-ref ref="FILE"/>
 	</root>
 	
 </configuration>

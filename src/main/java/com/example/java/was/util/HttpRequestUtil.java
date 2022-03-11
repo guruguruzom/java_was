@@ -8,12 +8,14 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.java.was.model.HttpRequest;
 
 public class HttpRequestUtil {
-	private final static Logger logger = Logger.getLogger(HttpRequestUtil.class.getCanonicalName());
+	private static Logger logger = LoggerFactory.getLogger(HttpRequestUtil.class);
 	private final static String[] stopwords = new String[] { ".exe", "/.." };
 
 	/**
@@ -43,7 +45,7 @@ public class HttpRequestUtil {
 			httpRequest.setUrl(tokens[1]);
 			SetParam(httpRequest);
 		} else {
-			logger.warning("request info missing" + token);
+			logger.error("request info missing" + token);
 		}
 
 		return httpRequest;
@@ -62,7 +64,7 @@ public class HttpRequestUtil {
 			return httpRequest;
 		}
 		if(parameter.length > 2) {
-			logger.warning("bad request");
+			logger.error("bad request");
 			return httpRequest;
 		}
 		
@@ -72,7 +74,7 @@ public class HttpRequestUtil {
 		for(String keyValueStr : parameter) {
 			String[] keyValue = keyValueStr.split("=");
 			if(keyValue.length == 1 || keyValue.length > 2) {
-				logger.warning("bad request");
+				logger.error("bad request");
 				break;
 			}
 			param.put(keyValue[0], keyValue[1]);

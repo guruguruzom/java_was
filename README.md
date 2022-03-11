@@ -19,9 +19,9 @@ project : WAS 구현
 ``` 
 ---
 ## 스펙 및 수행 정보
-+ 1. HTTP/1.1 의 Host 헤더를 해석하세요.
-    - a.com 과 b.com 의 IP 가 같을지라도 설정에 따라 서버에서 다른 데이터를 제공할 수 있어야 합니다.
-        * C:\Windows\System32\drivers\etc 파일 추가로 설정합니다.(127.0.0.1=a.com, 127.0.0.1=b.com)
+* HTTP/1.1 의 Host 헤더를 해석하세요.
+    + a.com 과 b.com 의 IP 가 같을지라도 설정에 따라 서버에서 다른 데이터를 제공할 수 있어야 합니다.
+        - C:\Windows\System32\drivers\etc 파일 추가로 설정합니다.(127.0.0.1=a.com, 127.0.0.1=b.com)
         
  
 + 2. 다음 사항을 설정 파일로 관리하세요.

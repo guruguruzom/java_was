@@ -18,10 +18,9 @@ project : WAS 구현
 3. git bash를 사용하실 땐 관리자 권한으로 실행 부탁드리겠습니다(java 실행 시 access문제).
 ``` 
 ---
-* 1. HTTP/1.1 의 Host 헤더를 해석하세요.
-+ a.com 과 b.com 의 IP 가 같을지라도 설정에 따라 서버에서 다른 데이터를 제공할 수 있어야 합니다.
-- C:\Windows\System32\drivers\etc 파일 추가로 설정합니다.
-- 127.0.0.1=a.com, 127.0.0.1=b.com
++ 1. HTTP/1.1 의 Host 헤더를 해석하세요.
+    - a.com 과 b.com 의 IP 가 같을지라도 설정에 따라 서버에서 다른 데이터를 제공할 수 있어야 합니다.
+        * C:\Windows\System32\drivers\etc 파일 추가로 설정합니다.(127.0.0.1=a.com, 127.0.0.1=b.com)
  
 >###2. 다음 사항을 설정 파일로 관리하세요.
 >> 파일 포맷은 JSON 으로 자유롭게 구성하세요.

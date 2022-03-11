@@ -1,39 +1,32 @@
 package com.example.java.was;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.junit.Assert.assertThat;
 
 import org.json.simple.JSONObject;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.java.was.model.ConfigModel;
-import com.example.java.was.module.ConfigModule;
 import com.example.java.was.util.ReadFileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/*@RunWith(Parameterized.class)
-@ContextConfiguration(classes = HttpServerTests.class)*/
 
-//@RunWith(SpringRunner.class)
-@RunWith(SpringRunner.class)
-//@SpringBootTest
-public class HttpServerTests {
+public class HttpServerTest {
 
-	private static Logger logger = LoggerFactory.getLogger(HttpServer.class);
+	private static Logger logger = LoggerFactory.getLogger(HttpServerTest.class);
 	
 	private static final String CONFIG_PATH = "\\src\\main\\resources\\";
 	private static final String CONFIG_FILE = "config.json";
 	
-	private ConfigModel config;
+	private static ConfigModel config;
 	/*
 	 * 1. HTTP/1.1 의 Host 헤더를 해석하세요.
 	 *  - C:\Windows\System32\drivers\etc 파일 추가로 설정
@@ -108,8 +101,8 @@ public class HttpServerTests {
 		responseApi("http://localhost",config.getPort(),"/Time", HttpStatus.OK);
 	}
 	
-	@Before
-	public void setConfig() throws Exception{
+	@BeforeClass
+	public static void setConfig() throws Exception{
 		HttpServer.serverInit();
 		String path = System.getProperty("user.dir");
 		JSONObject configJson = ReadFileUtil.getJsonObject(path + CONFIG_PATH + CONFIG_FILE);
@@ -122,6 +115,7 @@ public class HttpServerTests {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(ip).append(":").append(port).append(url);
 		ResponseEntity<String> responseEntity = restTemplate.getForEntity(stringBuilder.toString(), String.class);
+		Assert.assertEquals(responseEntity.getStatusCode(), responseType);
 	}
 	
 

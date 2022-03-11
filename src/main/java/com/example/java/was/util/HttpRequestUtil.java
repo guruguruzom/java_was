@@ -45,7 +45,7 @@ public class HttpRequestUtil {
 			httpRequest.setUrl(tokens[1]);
 			SetParam(httpRequest);
 		} else {
-			logger.error("request info missing" + token);
+			logger.warn("request info missing" + token);
 		}
 
 		return httpRequest;
@@ -64,7 +64,7 @@ public class HttpRequestUtil {
 			return httpRequest;
 		}
 		if(parameter.length > 2) {
-			logger.error("bad request");
+			logger.warn("bad request");
 			return httpRequest;
 		}
 		
@@ -74,7 +74,7 @@ public class HttpRequestUtil {
 		for(String keyValueStr : parameter) {
 			String[] keyValue = keyValueStr.split("=");
 			if(keyValue.length == 1 || keyValue.length > 2) {
-				logger.error("bad request");
+				logger.warn("bad request");
 				break;
 			}
 			param.put(keyValue[0], keyValue[1]);

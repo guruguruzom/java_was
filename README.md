@@ -19,7 +19,7 @@ project : WAS 구현
 ``` 
 ---
 ## 스펙 및 수행 정보
-* #####HTTP/1.1 의 Host 헤더를 해석하세요.
+* **HTTP/1.1 의 Host 헤더를 해석하세요.**
     + a.com 과 b.com 의 IP 가 같을지라도 설정에 따라 서버에서 다른 데이터를 제공할 수 있어야 합니다.
         - C:\Windows\System32\drivers\etc 파일 추가로 설정합니다.(127.0.0.1=a.com, 127.0.0.1=b.com)
         
@@ -32,7 +32,7 @@ project : WAS 구현
     +  HTTP/1.1 의 Host 별로 
         - url-mapping.json에서 관리하도록 되있습니다.
         - 현재는 localhost=/src/main/resources/templates/home1, 127.0.0.1=/src/main/resources/templates/home2로 이동하도록 설정되어 있습니다.
-        - **home2에는 Hello.html를 제외시켜 404가 발생합니다.**
+        - _home2에는 Hello.html를 제외시켜 404가 발생합니다._
 
 
 * 403, 404, 500 오류를 처리합니다.
